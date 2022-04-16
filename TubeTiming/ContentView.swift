@@ -8,9 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var trains: [Train] = []
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        
+        List(trains.sorted(by: { $0.timeToStation < $1.timeToStation })) {train in
+            Text(
+                """
+                To: \(train.destinationName)
+                \(train.platformName)
+                ETA: \(train.timeToStation/60) minutes
+                """
+            )
+        }
+        .onAppear{
+            Api().getData { trains in
+                self.trains = trains
+            }
+           
+        }
     }
 }
 
